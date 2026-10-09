@@ -1,0 +1,74 @@
+# JuraganWebsite - Apache rewrite rules for shared hosting (cPanel)
+# Membuat URL cantik: /hosting-api/posts.php → dipanggil via /api/posts
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # CORS preflight
+  RewriteCond %{REQUEST_METHOD} OPTIONS
+  RewriteRule ^(.*)$ $1 [R=204,L]
+
+  # Rewrite /api/X → /hosting-api/index.php?endpoint=X
+  # (kompatibilitas dengan frontend Next.js yang pakai /api/*)
+  RewriteRule ^api/([a-z0-9\-]+)/?$ hosting-api/index.php?endpoint=$1 [QSA,L]
+
+  # Rewrite /api/X/view → /hosting-api/index.php?endpoint=X-view
+  RewriteRule ^api/([a-z0-9\-]+)/([a-z0-9\-]+)/?$ hosting-api/index.php?endpoint=$1-$2 [QSA,L]
+
+  # Direct access to /hosting-api/<endpoint> (sudah tanpa /api prefix)
+  RewriteRule ^hosting-api/([a-z0-9\-]+)/?$ hosting-api/index.php?endpoint=$1 [QSA,L]
+  RewriteRule ^hosting-api/([a-z0-9\-]+)/([a-z0-9\-]+)/?$ hosting-api/index.php?endpoint=$1-$2 [QSA,L]
+
+  # Auth dengan action
+  # /api/auth/login → /hosting-api/index.php?endpoint=auth&action=login
+  # ditangani oleh rule pertama karena "auth" cocok
+</IfModule>
+
+# Security: blokir akses langsung ke file config & db
+<FilesMatch "^(config|db|auth)\.php$">
+  # Izinkan include internal tapi blokir akses HTTP langsung (best-effort)
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order Deny,Allow
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Izinkan install.php (jalankan sekali, hapus setelahnya)
+<Files "install.php">
+  <IfModule mod_authz_core.c>
+    Require all granted
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order Allow,Deny
+    Allow from all
+  </IfModule>
+</Files>
+
+# Default charset
+AddDefaultCharset utf-8
+
+# Security headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Cache static assets (Next.js _next)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
