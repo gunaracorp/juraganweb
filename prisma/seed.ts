@@ -277,8 +277,410 @@ async function main() {
     await db.message.create({ data: m }).catch(() => {});
   }
 
+  // =====================================================
+  // SERVICE PACKAGES (Hostinger + IDCloudHost style)
+  // =====================================================
+  const packages = [
+    // ---- SHARED HOSTING ----
+    {
+      slug: "hosting-single",
+      nameId: "Hosting Single",
+      nameEn: "Single Hosting",
+      descId: "Host 1 website dengan resource cukup untuk blog & portofolio.",
+      descEn: "Host 1 website with enough resources for blogs & portfolios.",
+      category: "hosting",
+      price: 14900, priceYearly: 13900, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["1 Website", "10 GB SSD Storage", "Unmetered Bandwidth", "Email Unlimited", "SSL Gratis", "cPanel", "Backup Mingguan"],
+      specs: { cpu: "1 Core", ram: "1 GB", disk: "10 GB", bandwidth: "Unmetered", databases: "2", emails: "Unlimited", ssl: "Free" },
+      popular: false, featured: true, active: true, order: 1,
+    },
+    {
+      slug: "hosting-premium",
+      nameId: "Hosting Premium",
+      nameEn: "Premium Hosting",
+      descId: "Pilihan terpopuler untuk bisnis & UMKM. Performa optimal.",
+      descEn: "Most popular choice for businesses & SMEs. Optimal performance.",
+      category: "hosting",
+      price: 39900, priceYearly: 34900, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["100 Website", "100 GB SSD Storage", "Unmetered Bandwidth", "Email Unlimited", "SSL Gratis", "cPanel", "Backup Harian", "LiteSpeed Cache"],
+      specs: { cpu: "2 Core", ram: "4 GB", disk: "100 GB", bandwidth: "Unmetered", databases: "Unlimited", emails: "Unlimited", ssl: "Free" },
+      popular: true, featured: true, active: true, order: 2,
+    },
+    {
+      slug: "hosting-business",
+      nameId: "Hosting Business",
+      nameEn: "Business Hosting",
+      descId: "Hosting kelas enterprise dengan NVMe storage & dedicated IP.",
+      descEn: "Enterprise-class hosting with NVMe storage & dedicated IP.",
+      category: "hosting",
+      price: 89900, priceYearly: 79900, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["Website Unlimited", "200 GB NVMe Storage", "Unmetered Bandwidth", "Email Unlimited", "SSL Wildcard", "cPanel", "Backup Harian", "Dedicated IP", "Cloudflare CDN"],
+      specs: { cpu: "4 Core", ram: "8 GB", disk: "200 GB NVMe", bandwidth: "Unmetered", databases: "Unlimited", emails: "Unlimited", ssl: "Wildcard" },
+      popular: false, featured: true, active: true, order: 3,
+    },
+    // ---- VPS ----
+    {
+      slug: "vps-kvm-1",
+      nameId: "VPS KVM 1",
+      nameEn: "KVM VPS 1",
+      descId: "VPS entry-level dengan akses root penuh. Cocok untuk developer.",
+      descEn: "Entry-level VPS with full root access. Great for developers.",
+      category: "vps",
+      price: 99000, priceYearly: 89000, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["1 vCPU", "2 GB RAM", "20 GB NVMe SSD", "1 TB Bandwidth", "1 IPv4", "Full Root Access", "OS: Ubuntu/Debian/Alma"],
+      specs: { cpu: "1 vCPU", ram: "2 GB", disk: "20 GB NVMe", bandwidth: "1 TB", ipv4: "1", snapshot: "Yes" },
+      popular: false, featured: true, active: true, order: 1,
+    },
+    {
+      slug: "vps-kvm-2",
+      nameId: "VPS KVM 2",
+      nameEn: "KVM VPS 2",
+      descId: "VPS populer untuk aplikasi web & production. RAM 4 GB.",
+      descEn: "Popular VPS for web apps & production. 4 GB RAM.",
+      category: "vps",
+      price: 199000, priceYearly: 179000, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["2 vCPU", "4 GB RAM", "40 GB NVMe SSD", "2 TB Bandwidth", "1 IPv4", "Full Root Access", "Free Snapshot"],
+      specs: { cpu: "2 vCPU", ram: "4 GB", disk: "40 GB NVMe", bandwidth: "2 TB", ipv4: "1", snapshot: "Yes" },
+      popular: true, featured: true, active: true, order: 2,
+    },
+    {
+      slug: "vps-kvm-4",
+      nameId: "VPS KVM 4",
+      nameEn: "KVM VPS 4",
+      descId: "VPS high-performance 8 vCPU untuk workload berat.",
+      descEn: "High-performance 8 vCPU VPS for heavy workloads.",
+      category: "vps",
+      price: 499000, priceYearly: 449000, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["8 vCPU", "16 GB RAM", "160 GB NVMe SSD", "8 TB Bandwidth", "1 IPv4", "Full Root Access", "Free Snapshot"],
+      specs: { cpu: "8 vCPU", ram: "16 GB", disk: "160 GB NVMe", bandwidth: "8 TB", ipv4: "1", snapshot: "Yes" },
+      popular: false, featured: true, active: true, order: 3,
+    },
+    // ---- CLOUD ----
+    {
+      slug: "cloud-starter",
+      nameId: "Cloud Hosting Starter",
+      nameEn: "Cloud Hosting Starter",
+      descId: "Cloud hosting terkelola dengan auto-scaling & high availability.",
+      descEn: "Managed cloud hosting with auto-scaling & high availability.",
+      category: "cloud",
+      price: 149000, priceYearly: 129000, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["2 Core CPU", "4 GB RAM", "50 GB NVMe", "Unmetered Bandwidth", "Auto-Scaling", "99.99% Uptime SLA", "Managed", "Daily Backup"],
+      specs: { cpu: "2 Core", ram: "4 GB", disk: "50 GB NVMe", scaling: "Auto", uptime: "99.99%", managed: true },
+      popular: true, featured: true, active: true, order: 1,
+    },
+    {
+      slug: "cloud-growth",
+      nameId: "Cloud Hosting Growth",
+      nameEn: "Cloud Hosting Growth",
+      descId: "Cloud untuk bisnis berkembang dengan traffic tinggi.",
+      descEn: "Cloud for growing businesses with high traffic.",
+      category: "cloud",
+      price: 299000, priceYearly: 269000, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["4 Core CPU", "8 GB RAM", "100 GB NVMe", "Unmetered Bandwidth", "Auto-Scaling", "99.99% Uptime SLA", "Managed", "Daily Backup", "Priority Support"],
+      specs: { cpu: "4 Core", ram: "8 GB", disk: "100 GB NVMe", scaling: "Auto", uptime: "99.99%", managed: true },
+      popular: false, featured: true, active: true, order: 2,
+    },
+    // ---- WORDPRESS ----
+    {
+      slug: "wp-starter",
+      nameId: "WordPress Hosting Starter",
+      nameEn: "WordPress Hosting Starter",
+      descId: "Hosting WordPress dioptimasi dengan LiteSpeed & cache.",
+      descEn: "WordPress-optimized hosting with LiteSpeed & cache.",
+      category: "wordpress",
+      price: 29900, priceYearly: 24900, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["1 Website WordPress", "10 GB SSD", "100k Visits/bulan", "LiteSpeed Cache", "Auto SSL", "Staging", "Backup Harian", "WP CLI"],
+      specs: { websites: "1", disk: "10 GB", visits: "100k", cache: "LiteSpeed", ssl: "Auto" },
+      popular: false, featured: true, active: true, order: 1,
+    },
+    {
+      slug: "wp-business",
+      nameId: "WordPress Hosting Business",
+      nameEn: "WordPress Hosting Business",
+      descId: "WordPress managed untuk toko online & high-traffic.",
+      descEn: "Managed WordPress for online stores & high-traffic sites.",
+      category: "wordpress",
+      price: 89900, priceYearly: 79900, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["5 Website WordPress", "50 GB NVMe", "500k Visits/bulan", "LiteSpeed Cache", "Auto SSL", "Staging", "Backup Harian", "On-demand Backups", "Priority Support"],
+      specs: { websites: "5", disk: "50 GB NVMe", visits: "500k", cache: "LiteSpeed", ssl: "Auto" },
+      popular: true, featured: true, active: true, order: 2,
+    },
+    // ---- EMAIL ----
+    {
+      slug: "email-starter",
+      nameId: "Email Bisnis Starter",
+      nameEn: "Business Email Starter",
+      descId: "Email profesional dengan domain sendiri. 10 GB mailbox.",
+      descEn: "Professional email with your own domain. 10 GB mailbox.",
+      category: "email",
+      price: 19900, priceYearly: 17900, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["5 Akun Email", "10 GB Mailbox/akun", "Webmail", "Anti-Spam", "POP3/IMAP/SMTP", "Calendar", "Contacts"],
+      specs: { accounts: "5", storage: "10 GB", webmail: true, antispam: true },
+      popular: false, featured: true, active: true, order: 1,
+    },
+    {
+      slug: "email-business",
+      nameId: "Email Bisnis Pro",
+      nameEn: "Business Email Pro",
+      descId: "Email bisnis kolaboratif dengan 30 GB & calendar sharing.",
+      descEn: "Collaborative business email with 30 GB & calendar sharing.",
+      category: "email",
+      price: 49900, priceYearly: 44900, setupFee: 0,
+      currency: "IDR", billingCycle: "monthly",
+      features: ["25 Akun Email", "30 GB Mailbox/akun", "Webmail", "Anti-Spam Pro", "POP3/IMAP/SMTP", "Shared Calendar", "Shared Contacts", "Mobile Sync"],
+      specs: { accounts: "25", storage: "30 GB", webmail: true, antispam: true },
+      popular: true, featured: true, active: true, order: 2,
+    },
+    // ---- SSL ----
+    {
+      slug: "ssl-domain",
+      nameId: "SSL Domain (DV)",
+      nameEn: "Domain SSL (DV)",
+      descId: "Sertifikat SSL validasi domain, terbit dalam menit.",
+      descEn: "Domain-validated SSL certificate, issued in minutes.",
+      category: "ssl",
+      price: 29000, priceYearly: 25000, setupFee: 0,
+      currency: "IDR", billingCycle: "yearly",
+      features: ["Domain Validation", "Terbit < 10 menit", "256-bit Encryption", "Browser Trust", "Seal Situs", "Garansi $10k"],
+      specs: { validation: "DV", warranty: "$10,000", issuance: "Minutes" },
+      popular: false, featured: true, active: true, order: 1,
+    },
+    {
+      slug: "ssl-wildcard",
+      nameId: "SSL Wildcard",
+      nameEn: "Wildcard SSL",
+      descId: "Lindungi unlimited subdomain dengan 1 sertifikat.",
+      descEn: "Protect unlimited subdomains with one certificate.",
+      category: "ssl",
+      price: 299000, priceYearly: 269000, setupFee: 0,
+      currency: "IDR", billingCycle: "yearly",
+      features: ["Wildcard (*.domain)", "256-bit Encryption", "Unlimited Subdomains", "Browser Trust", "Seal Situs", "Garansi $100k"],
+      specs: { validation: "DV", warranty: "$100,000", issuance: "Hours" },
+      popular: true, featured: true, active: true, order: 2,
+    },
+    {
+      slug: "ssl-ev",
+      nameId: "SSL Extended Validation (EV)",
+      nameEn: "Extended Validation SSL (EV)",
+      descId: "SSL kelas enterprise dengan green bar & verifikasi perusahaan.",
+      descEn: "Enterprise SSL with green bar & company verification.",
+      category: "ssl",
+      price: 999000, priceYearly: 899000, setupFee: 0,
+      currency: "IDR", billingCycle: "yearly",
+      features: ["Extended Validation", "Verifikasi Perusahaan", "256-bit Encryption", "Green Bar", "Seal Situs", "Garansi $1M"],
+      specs: { validation: "EV", warranty: "$1,000,000", issuance: "1-3 Days" },
+      popular: false, featured: false, active: true, order: 3,
+    },
+  ];
+
+  for (const p of packages) {
+    await db.servicePackage.upsert({
+      where: { slug: p.slug },
+      update: {},
+      create: {
+        slug: p.slug,
+        nameId: p.nameId,
+        nameEn: p.nameEn,
+        descId: p.descId,
+        descEn: p.descEn,
+        category: p.category,
+        price: p.price,
+        priceYearly: p.priceYearly,
+        setupFee: p.setupFee,
+        currency: p.currency,
+        billingCycle: p.billingCycle,
+        features: JSON.stringify(p.features),
+        specs: JSON.stringify(p.specs),
+        popular: p.popular,
+        featured: p.featured,
+        active: p.active,
+        order: p.order,
+        maxOrders: 0,
+        stock: -1,
+      },
+    });
+  }
+
+  // =====================================================
+  // DOMAIN TLDs
+  // =====================================================
+  const tlds = [
+    { tld: ".com", register: 165000, transfer: 165000, renew: 185000, popular: true, promo: true, promoPrice: 99000, category: "popular" },
+    { tld: ".net", register: 199000, transfer: 199000, renew: 219000, popular: true, promo: false, promoPrice: 0, category: "popular" },
+    { tld: ".org", register: 209000, transfer: 209000, renew: 229000, popular: true, promo: false, promoPrice: 0, category: "popular" },
+    { tld: ".id", register: 299000, transfer: 299000, renew: 299000, popular: true, promo: false, promoPrice: 0, category: "geo" },
+    { tld: ".co.id", register: 320000, transfer: 320000, renew: 320000, popular: true, promo: false, promoPrice: 0, category: "geo" },
+    { tld: ".web.id", register: 75000, transfer: 75000, renew: 75000, popular: true, promo: true, promoPrice: 45000, category: "geo" },
+    { tld: ".or.id", register: 175000, transfer: 175000, renew: 175000, popular: false, promo: false, promoPrice: 0, category: "geo" },
+    { tld: ".ac.id", register: 200000, transfer: 200000, renew: 200000, popular: false, promo: false, promoPrice: 0, category: "geo" },
+    { tld: ".sch.id", register: 175000, transfer: 175000, renew: 175000, popular: false, promo: false, promoPrice: 0, category: "geo" },
+    { tld: ".info", register: 89000, transfer: 89000, renew: 109000, popular: false, promo: true, promoPrice: 59000, category: "popular" },
+    { tld: ".biz", register: 99000, transfer: 99000, renew: 119000, popular: false, promo: false, promoPrice: 0, category: "popular" },
+    { tld: ".xyz", register: 35000, transfer: 35000, renew: 65000, popular: true, promo: true, promoPrice: 19000, category: "tech" },
+    { tld: ".online", register: 89000, transfer: 89000, renew: 259000, popular: false, promo: true, promoPrice: 39000, category: "sale" },
+    { tld: ".store", register: 99000, transfer: 99000, renew: 499000, popular: false, promo: true, promoPrice: 49000, category: "sale" },
+    { tld: ".tech", register: 119000, transfer: 119000, renew: 349000, popular: false, promo: true, promoPrice: 59000, category: "tech" },
+    { tld: ".site", register: 79000, transfer: 79000, renew: 199000, popular: false, promo: true, promoPrice: 29000, category: "sale" },
+    { tld: ".blog", register: 129000, transfer: 129000, renew: 249000, popular: false, promo: false, promoPrice: 0, category: "business" },
+    { tld: ".shop", register: 99000, transfer: 99000, renew: 289000, popular: false, promo: true, promoPrice: 49000, category: "business" },
+    { tld: ".cloud", register: 89000, transfer: 89000, renew: 189000, popular: false, promo: false, promoPrice: 0, category: "tech" },
+    { tld: ".app", register: 139000, transfer: 139000, renew: 169000, popular: false, promo: false, promoPrice: 0, category: "tech" },
+    { tld: ".dev", register: 149000, transfer: 149000, renew: 179000, popular: false, promo: false, promoPrice: 0, category: "tech" },
+    { tld: ".io", register: 399000, transfer: 399000, renew: 429000, popular: true, promo: false, promoPrice: 0, category: "tech" },
+  ];
+  for (const t of tlds) {
+    await db.domainTld.upsert({
+      where: { tld: t.tld },
+      update: {},
+      create: t,
+    });
+  }
+
+  // =====================================================
+  // KNOWLEDGE BASE (tutorials)
+  // =====================================================
+  const kb = [
+    {
+      slug: "cara-daftar-hosting",
+      titleId: "Cara Daftar Hosting di JuraganWebsite",
+      titleEn: "How to Register Hosting on JuraganWebsite",
+      contentId: "Panduan lengkap mendaftar hosting: pilih paket, isi data, bayar, dan aktivasi langsung.\n\n## 1. Pilih Paket Hosting\nBandingkan paket di halaman /hosting lalu pilih yang sesuai kebutuhan.\n\n## 2. Daftar Akun\nKlik tombol pesan, isi email & data, buat password.\n\n## 3. Pembayaran\nBayar via transfer bank, QRIS, atau e-wallet. Layanan aktif otomatis setelah pembayaran terkonfirmasi.\n\n## 4. Kelola di Client Area\nAkses /client untuk manage hosting, domain, dan invoice.",
+      contentEn: "Complete guide to register hosting: choose plan, fill data, pay, and activate instantly.\n\n## 1. Choose Hosting Plan\nCompare plans on /hosting and pick one that fits.\n\n## 2. Register Account\nClick order, fill email & data, create password.\n\n## 3. Payment\nPay via bank transfer, QRIS, or e-wallet. Service activates after payment confirms.\n\n## 4. Manage in Client Area\nAccess /client to manage hosting, domains, and invoices.",
+      excerptId: "Panduan mendaftar hosting dari awal hingga aktif.",
+      excerptEn: "Guide to register hosting from start to activation.",
+      category: "Hosting", tags: "hosting,daftar,panduan", featured: true,
+    },
+    {
+      slug: "cara-point-domain",
+      titleId: "Cara Point Domain ke Hosting",
+      titleEn: "How to Point a Domain to Hosting",
+      contentId: "Ubah nameserver atau A record agar domain mengarah ke hosting Anda.\n\n## 1. Login Domain Registrar\nBuka dashboard tempat beli domain.\n\n## 2. Ubah Nameserver\nGunakan: ns1.juraganwebsite.id dan ns2.juraganwebsite.id\n\n## 3. Tunggu Propagasi\nBiasanya 1-24 jam hingga domain resolve ke hosting.",
+      contentEn: "Change nameservers or A records so your domain points to your hosting.\n\n## 1. Login Domain Registrar\nOpen dashboard where you bought the domain.\n\n## 2. Change Nameservers\nUse: ns1.juraganwebsite.id and ns2.juraganwebsite.id\n\n## 3. Wait for Propagation\nUsually 1-24 hours for the domain to resolve to hosting.",
+      excerptId: "Setting DNS agar domain mengarah ke hosting Anda.",
+      excerptEn: "Configure DNS so your domain points to your hosting.",
+      category: "Domain", tags: "domain,dns,nameserver", featured: false,
+    },
+    {
+      slug: "install-wordpress-cpanel",
+      titleId: "Cara Install WordPress via cPanel",
+      titleEn: "How to Install WordPress via cPanel",
+      contentId: "Install WordPress dalam 5 menit lewat Softaculous.\n\n## 1. Login cPanel\nAkses cPanel dari Client Area.\n\n## 2. Buka Softaculous\nCari menu WordPress di Softaculous Apps Installer.\n\n## 3. Install\nKlik Install, isi domain & data admin, lalu Install.",
+      contentEn: "Install WordPress in 5 minutes via Softaculous.\n\n## 1. Login cPanel\nAccess cPanel from Client Area.\n\n## 2. Open Softaculous\nFind WordPress in Softaculous Apps Installer.\n\n## 3. Install\nClick Install, fill domain & admin data, then Install.",
+      excerptId: "Install WordPress cepat lewat cPanel Softaculous.",
+      excerptEn: "Quick WordPress install via cPanel Softaculous.",
+      category: "WordPress", tags: "wordpress,cpanel,install", featured: false,
+    },
+    {
+      slug: "backup-restore-website",
+      titleId: "Cara Backup & Restore Website",
+      titleEn: "How to Backup & Restore Website",
+      contentId: "Cadangkan website Anda agar aman dari kehilangan data.\n\n## Backup\nGunakan fitur Backup di cPanel atau JetBackup untuk download full backup.\n\n## Restore\nUpload file backup, pilih restore, tunggu proses selesai.\n\n## Otomatis\nAktifkan backup harian otomatis di paket Premium ke atas.",
+      contentEn: "Back up your website to stay safe from data loss.\n\n## Backup\nUse Backup in cPanel or JetBackup to download a full backup.\n\n## Restore\nUpload the backup file, select restore, wait for completion.\n\n## Automatic\nEnable daily automatic backups on Premium plans and above.",
+      excerptId: "Melindungi website dengan backup berkala.",
+      excerptEn: "Protect your website with regular backups.",
+      category: "Security", tags: "backup,restore,security", featured: false,
+    },
+    {
+      slug: "setup-ssl-gratis",
+      titleId: "Cara Aktivasi SSL Gratis Let's Encrypt",
+      titleEn: "How to Activate Free Let's Encrypt SSL",
+      contentId: "SSL gratis untuk semua paket hosting JuraganWebsite.\n\n## 1. Buka cPanel\nLogin ke cPanel.\n\n## 2. SSL/TLS\nCari menu SSL/TLS, pilih Let's Encrypt.\n\n## 3. Issue\nPilih domain, klik Issue. SSL aktif otomatis.\n\n## Auto-Renew\nLet's Encrypt diperbarui otomatis tiap 90 hari.",
+      contentEn: "Free SSL for all JuraganWebsite hosting plans.\n\n## 1. Open cPanel\nLogin to cPanel.\n\n## 2. SSL/TLS\nFind SSL/TLS menu, select Let's Encrypt.\n\n## 3. Issue\nSelect domain, click Issue. SSL activates automatically.\n\n## Auto-Renew\nLet's Encrypt renews automatically every 90 days.",
+      excerptId: "Aktivasi SSL gratis untuk domain Anda.",
+      excerptEn: "Activate free SSL for your domain.",
+      category: "Security", tags: "ssl,lets-encrypt,security", featured: false,
+    },
+    {
+      slug: "optimize-wordpress-speed",
+      titleId: "Tips Optimasi Kecepatan WordPress",
+      titleEn: "WordPress Speed Optimization Tips",
+      contentId: "Percepat WordPress Anda dengan cache, image optimization, dan CDN.\n\n## 1. Gunakan Cache\nInstall LiteSpeed Cache atau WP Rocket.\n\n## 2. Optimasi Gambar\nKompres gambar dengan ShortPixel atau Smush.\n\n## 3. CDN\nAktifkan Cloudflare CDN gratis.\n\n## 4. Database Cleanup\nBersihkan revisi & spam secara berkala.",
+      contentEn: "Speed up WordPress with cache, image optimization, and CDN.\n\n## 1. Use Cache\nInstall LiteSpeed Cache or WP Rocket.\n\n## 2. Optimize Images\nCompress images with ShortPixel or Smush.\n\n## 3. CDN\nEnable free Cloudflare CDN.\n\n## 4. Database Cleanup\nClean revisions & spam regularly.",
+      excerptId: "Cara membuat WordPress loading lebih cepat.",
+      excerptEn: "How to make WordPress load faster.",
+      category: "Performance", tags: "wordpress,speed,optimization", featured: true,
+    },
+  ];
+  for (const a of kb) {
+    await db.knowledgeArticle.upsert({
+      where: { slug: a.slug },
+      update: {},
+      create: { ...a, author: "Tim JuraganWebsite", published: true },
+    });
+  }
+
+  // Sample customer for demo login
+  await db.customer.upsert({
+    where: { email: "demo@juraganwebsite.id" },
+    update: {},
+    create: {
+      email: "demo@juraganwebsite.id",
+      name: "Demo Pelanggan",
+      phone: "081200000000",
+      password: hashPassword("demo123"),
+      status: "active",
+      verified: true,
+      totalSpent: 549000,
+      totalOrders: 3,
+    },
+  });
+  // Sample customer services for demo
+  const demoCustomer = await db.customer.findUnique({ where: { email: "demo@juraganwebsite.id" } });
+  if (demoCustomer) {
+    await db.customerService.create({
+      data: {
+        customerId: demoCustomer.id,
+        name: "Hosting Premium",
+        category: "hosting",
+        billingCycle: "monthly",
+        price: 39900,
+        status: "active",
+        domain: "demo-site.com",
+        serverName: "srv01.juraganwebsite.id",
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 45),
+      },
+    }).catch(() => {});
+    await db.customerService.create({
+      data: {
+        customerId: demoCustomer.id,
+        name: "Domain .com",
+        category: "domain",
+        billingCycle: "yearly",
+        price: 99000,
+        status: "active",
+        domain: "demo-site.com",
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 300),
+      },
+    }).catch(() => {});
+    await db.customerService.create({
+      data: {
+        customerId: demoCustomer.id,
+        name: "SSL Wildcard",
+        category: "ssl",
+        billingCycle: "yearly",
+        price: 269000,
+        status: "active",
+        domain: "demo-site.com",
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 150),
+      },
+    }).catch(() => {});
+  }
+
   console.log("✅ Seeding complete!");
   console.log("   Admin: username=admin password=juragan2007");
+  console.log("   Customer demo: email=demo@juraganwebsite.id password=demo123");
+  console.log("   Packages: " + packages.length + " | TLDs: " + tlds.length + " | KB: " + kb.length);
 }
 
 main()

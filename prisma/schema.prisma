@@ -675,3 +675,39 @@ model Notification {
   @@index([userId])
   @@index([read])
 }
+
+// Domain TLD pricing (untuk halaman domain search)
+model DomainTld {
+  id          String   @id @default(cuid())
+  tld         String   @unique // .com, .id, .web.id, .co.id, .net, .org, .info, .biz, .xyz, .online, .store, .tech, .site, .online
+  register    Int      @default(0)   // harga register (IDR) /tahun
+  transfer    Int      @default(0)
+  renew       Int      @default(0)
+  popular     Boolean  @default(false)
+  promo       Boolean  @default(false)
+  promoPrice  Int      @default(0)
+  category    String   @default("popular") // popular, geo, business, tech, sale
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Layanan hosting aktif pelanggan (terlink ke Order)
+model CustomerService {
+  id            String   @id @default(cuid())
+  customerId    String
+  orderId       String?
+  packageId     String?
+  domain        String?   // domain terkait
+  name          String    // nama layanan
+  category      String    // hosting, vps, cloud, domain, ssl, email, wordpress
+  billingCycle  String   @default("monthly")
+  price         Int      @default(0)
+  status        String   @default("active") // active, suspended, pending, cancelled, expired
+  createdAt     DateTime @default(now())
+  expiresAt     DateTime?
+  username      String?
+  serverName    String?
+  @@index([customerId])
+  @@index([status])
+}
