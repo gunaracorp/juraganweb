@@ -34,6 +34,7 @@ const COMPANY_LINKS = [
   { href: "/portfolio", label: "Portofolio" },
   { href: "/blog", label: "Blog" },
   { href: "/knowledge", label: "Pusat Bantuan" },
+  { href: "/compare", label: "Bandingkan Provider" },
   { href: "/affiliate", label: "Program Afiliasi" },
   { href: "/contact", label: "Kontak" },
 ];

@@ -35,6 +35,7 @@ const MAIN_LINKS = [
   { href: "/vps", label: "VPS" },
   { href: "/domain", label: "Domain" },
   { href: "/pricing", label: "Harga" },
+  { href: "/compare", label: "Bandingkan" },
   { href: "/blog", label: "Blog" },
   { href: "/knowledge", label: "Bantuan" },
 ];
@@ -229,6 +230,7 @@ export function SiteHeader() {
                 ))}
                 <p className="px-3 pt-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">Perusahaan</p>
                 <Link href="/pricing" className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-accent">Harga</Link>
+                <Link href="/compare" className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-accent">Bandingkan Provider</Link>
                 <Link href="/blog" className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-accent">Blog</Link>
                 <Link href="/knowledge" className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-accent">Bantuan</Link>
                 <Link href="/about" className="rounded-md px-3 py-2.5 text-sm font-medium hover:bg-accent">Tentang</Link>

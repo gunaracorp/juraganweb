@@ -711,3 +711,31 @@ model CustomerService {
   @@index([customerId])
   @@index([status])
 }
+
+// Kompetitor / provider hosting & domain referensi (top 10+ dunia & Indonesia)
+model Competitor {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  name          String
+  url           String
+  logo          String?  // emoji atau inisial
+  country       String   @default("Global") // Global, Indonesia, USA, dll
+  region        String   @default("global") // global, indonesia
+  type          String   @default("both") // hosting, domain, both
+  founded       Int?     // tahun berdiri
+  customers     String?  // jumlah pelanggan (human-readable, mis. "84M domains")
+  marketShare   String?  // mis. "10.8%"
+  description   String
+  pros          String   @default("[]") // JSON array of string
+  cons          String   @default("[]") // JSON array of string
+  features      String   @default("[]") // JSON array
+  pricingFrom   String?  // mis. "Rp 14.900/bln" atau "$2.99/mo"
+  uptime        String?  // mis. "99.99%"
+  datacenters   String?  // mis. "150+ negara"
+  rating        Float    @default(4.5) // 0-5
+  popular       Boolean  @default(false)
+  order         Int      @default(0)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
